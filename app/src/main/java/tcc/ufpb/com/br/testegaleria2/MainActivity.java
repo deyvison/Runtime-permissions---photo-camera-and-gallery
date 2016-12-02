@@ -1,6 +1,7 @@
 package tcc.ufpb.com.br.testegaleria2;
 
 import android.media.MediaScannerConnection;
+import android.os.Build;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -115,15 +116,15 @@ public class MainActivity extends AppCompatActivity {
         else if (requestCode == 1) {
 
             if (data != null) {
-
-                Bundle bundle = data.getExtras();
-
-                Bitmap bitmap = bundle.getParcelable("data");
-
-                imageView.setImageBitmap(bitmap);
-
                 try {
-                    saveImageToExternalStorage(bitmap);
+                    Bundle bundle = data.getExtras();
+                    if(bundle != null) {
+                        Bitmap bitmap = bundle.getParcelable("data");
+                        imageView.setImageBitmap(bitmap);
+                        saveImageToExternalStorage(bitmap);
+                    }
+
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -194,19 +195,22 @@ public class MainActivity extends AppCompatActivity {
 
     public void EnableRuntimePermission(){
 
-        if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,
-                Manifest.permission.CAMERA))
-        {
+        if(Build.VERSION.SDK_INT > 23){
 
-            Toast.makeText(MainActivity.this,"CAMERA permission allows us to Access CAMERA app", Toast.LENGTH_LONG).show();
+            if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,
+                    Manifest.permission.CAMERA) && ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE)){
 
-        } else {
+                Toast.makeText(MainActivity.this,"Todas as permissões concedidas", Toast.LENGTH_LONG).show();
 
-            ActivityCompat.requestPermissions(MainActivity.this,new String[]{
-                    Manifest.permission.CAMERA,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE}, RequestPermissionCode);
+            } else {
+                ActivityCompat.requestPermissions(MainActivity.this,new String[]{
+                        Manifest.permission.CAMERA,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE}, RequestPermissionCode);
+            }
 
         }
+
 
     }
 
