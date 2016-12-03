@@ -1,8 +1,11 @@
 package tcc.ufpb.com.br.testegaleria2;
 
+import android.content.DialogInterface;
+import android.database.Cursor;
 import android.media.MediaScannerConnection;
 import android.os.Build;
 import android.provider.MediaStore;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -21,7 +24,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -51,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
 
         EnableRuntimePermission();
 
+
+
         buttonCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -69,6 +77,42 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+        Button btnLoadImage = (Button) findViewById(R.id.btnselecionarfoto);
+
+        btnLoadImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectImage();
+            }
+        });
+
+    }
+
+
+    private void selectImage() {
+        final CharSequence[] items = { "Tirar Foto", "Selecionar da Galeria",
+                "Cancelar" };
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setTitle("Adicionar foto!");
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+
+
+                if (items[item].equals("Tirar Foto")) {
+                    ClickImageFromCamera();
+
+                } else if (items[item].equals("Selecionar da Galeria")) {
+                    GetImageFromGallery();
+
+                } else if (items[item].equals("Cancelar")) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        builder.show();
     }
 
     public void ClickImageFromCamera() {
@@ -122,6 +166,10 @@ public class MainActivity extends AppCompatActivity {
                         Bitmap bitmap = bundle.getParcelable("data");
                         imageView.setImageBitmap(bitmap);
                         saveImageToExternalStorage(bitmap);
+
+
+                        // teste
+
                     }
 
 
@@ -133,16 +181,39 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+
     public void saveImageToExternalStorage(Bitmap finalBitmap) throws IOException {
         //String root =Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString();
         File root = android.os.Environment.getExternalStorageDirectory();
         File myDir = new File(root + "/ABCdaForca");
         myDir.mkdirs();
         Random generator = new Random();
-        int n = 1000000;
+        int n = 1000000000;
+        int x = 1000000000;
+        int y = 1000000000;
         n = generator.nextInt(n);
-        String fname = "Image-" + n + ".jpg";
+        x = generator.nextInt(x);
+        y = generator.nextInt(y);
+        String fname = "Image-" + n + x + y + ".jpg";
         File file1 = new File(myDir, fname);
+
+        // teste
+        TextView lol = (TextView)findViewById(R.id.text);
+        //lol.setText(myDir+fname);
+        if (lol != null) {
+            lol.setText(file1.getPath());
+        }
+
+        ImageView lol2 = (ImageView) findViewById(R.id.imageview2);
+        Picasso
+                .with(this)
+                .load(new File(file1.getPath()))
+                .resize(200,200)
+                .into(lol2);
+        //teste
+
+
         if (file1.exists())
             file1.delete();
         //file1.createNewFile();
