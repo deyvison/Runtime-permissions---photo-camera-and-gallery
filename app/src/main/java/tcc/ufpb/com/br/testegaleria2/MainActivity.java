@@ -1,14 +1,11 @@
 package tcc.ufpb.com.br.testegaleria2;
 
 import android.content.DialogInterface;
-import android.database.Cursor;
 import android.media.MediaScannerConnection;
 import android.os.Build;
-import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-
 import android.Manifest;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -17,19 +14,13 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.squareup.picasso.Picasso;
-
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -38,13 +29,11 @@ import java.util.Random;
 public class MainActivity extends AppCompatActivity {
 
     ImageView imageView;
-    Button buttonCamera, buttonGallery ;
+    Button btnSalvar, btnCortar ;
     File file;
     Uri uri;
     Intent CamIntent, GalIntent, CropIntent ;
     public  static final int RequestPermissionCode  = 1 ;
-    DisplayMetrics displayMetrics ;
-    int width, height;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,40 +41,22 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         imageView = (ImageView)findViewById(R.id.imageview);
-        buttonCamera = (Button)findViewById(R.id.button2);
-        buttonGallery = (Button)findViewById(R.id.button1);
+        btnCortar = (Button)findViewById(R.id.button2);
+        btnSalvar = (Button)findViewById(R.id.button1);
 
         EnableRuntimePermission();
 
 
+        final Button btnLoadImage = (Button) findViewById(R.id.btnselecionarfoto);
 
-        buttonCamera.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                ClickImageFromCamera() ;
-
-            }
-        });
-
-        buttonGallery.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                GetImageFromGallery();
-
-            }
-        });
-
-
-        Button btnLoadImage = (Button) findViewById(R.id.btnselecionarfoto);
-
-        btnLoadImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                selectImage();
-            }
-        });
+        if (btnLoadImage != null) {
+            btnLoadImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    selectImage();
+                }
+            });
+        }
 
     }
 
@@ -142,12 +113,16 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 0 && resultCode == RESULT_OK) {
-
+        if (requestCode == 0 && resultCode == RESULT_OK) { // tirar foto com a camera
+            // deseja cortar a fot?
+            // se sim
             ImageCropFunction();
 
+            // se não, apenas salva
+
+
         }
-        else if (requestCode == 2) {
+        else if (requestCode == 2) { // carregar da galeria
 
             if (data != null) {
 
@@ -157,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         }
-        else if (requestCode == 1) {
+        else if (requestCode == 1) { // cortar
 
             if (data != null) {
                 try {
@@ -249,12 +224,14 @@ public class MainActivity extends AppCompatActivity {
             CropIntent.setDataAndType(uri, "image/*");
 
             CropIntent.putExtra("crop", "true");
-            CropIntent.putExtra("outputX", 180);
-            CropIntent.putExtra("outputY", 180);
-            CropIntent.putExtra("aspectX", 3);
-            CropIntent.putExtra("aspectY", 4);
+            //CropIntent.putExtra("outputX", 180);
+            //CropIntent.putExtra("outputY", 180);
+            CropIntent.putExtra("aspectX", 0);
+            CropIntent.putExtra("aspectY", 0);
             CropIntent.putExtra("scaleUpIfNeeded", true);
             CropIntent.putExtra("return-data", true);
+
+
 
             startActivityForResult(CropIntent, 1);
 

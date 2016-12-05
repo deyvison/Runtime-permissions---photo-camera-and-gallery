@@ -33,7 +33,7 @@
 
 
     <Button
-        android:text="Click Here For PICK image from Gallery TO CROP"
+        android:text="Salvar"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/imageview"
@@ -42,7 +42,7 @@
         android:id="@+id/button1" />
 
     <Button
-        android:text="Click Here For CLICK image from Camera TO CROP"
+        android:text="Cortar Foto"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/button1"
